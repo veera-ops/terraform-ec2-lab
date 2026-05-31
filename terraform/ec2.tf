@@ -31,3 +31,16 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+resource "aws_instance" "server" {
+  ami                         = data.aws_ami.amazon_linux.id
+  instance_type               = "t2.micro"
+
+  subnet_id                   = aws_subnet.public.id
+  key_name                    = aws_key_pair.key.key_name
+  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "terraform-test-server"
+  }
+}
